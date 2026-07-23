@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>flowers for your loved ones</title>
+  <meta name="description" content="Build a beautiful digital flower bouquet and send it to someone you love. Choose from roses, peonies, sunflowers, and more.">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="page-wrapper">
+    <div class="page-content animate-fade-in">
+
+      <!-- Hero Flower -->
+      <img
+        src="./assets/other/peony-hero.webp"
+        alt="peony flower"
+        class="hero-flower"
+        width="120" height="120"
+      >
+
+      <!-- Title -->
+      <h1 class="brand-title">flowers for<br>your loved ones</h1>
+      
+      <!-- Tagline -->
+      <p class="tagline">
+        beautiful flowers delivered digitally
+      </p>
+
+      <!-- Actions -->
+      <div class="btn-group">
+        <a href="./bouquet.html?mode=color" class="btn btn-primary" id="btn-build-color">
+          BUILD A BOUQUET
+        </a>
+        <a href="./bouquet.html?mode=mono" class="btn btn-secondary" id="btn-build-mono">
+          BUILD IN BLACK & WHITE
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+  <script>
+    // Clear any existing builder state when returning to home
+    clearBuilderState();
+  </script>
+</body>
+</html>

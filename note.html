@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>write a note — flowers for your loved ones</title>
+  <meta name="description" content="Add a message to your bouquet.">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="page-wrapper animate-fade-in" style="min-height: auto;">
+    <div style="width:100%; max-width:48rem; margin:0 auto; text-align:center; padding:0.5rem 0.5rem 2rem;">
+
+      <!-- Header -->
+      <a href="./index.html" class="logo-link">
+        <h2 class="brand-title-small" style="text-align: center;">flowers for your loved ones</h2>
+      </a>
+
+      <h2 class="section-heading" style="margin-top:0.5rem;">WRITE A NOTE</h2>
+      <p class="section-subtitle">Add a personal message to your bouquet.</p>
+
+      <!-- Note Card -->
+      <div style="margin: 1rem auto; max-width:28rem;">
+        <div class="note-card">
+          <textarea id="note-body" placeholder="Write your message here..."></textarea>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="btn-group-horizontal" style="padding:1rem 0 0.5rem;">
+        <a href="./arrange.html" class="btn btn-small btn-secondary" id="btn-back" style="width:auto;">BACK</a>
+        <button class="btn btn-small btn-primary" id="btn-next" style="width:auto;">FINISH</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+  <script>
+    // ─── State ─────────────────────────────────
+    const mode = getMode();
+    const state = loadBuilderState();
+    
+    if (!state || !state.flowers || state.flowers.length < 3) {
+      window.location.href = `./bouquet.html?mode=${mode}`;
+    }
+
+    // Set back button mode
+    document.getElementById('btn-back').href = `./arrange.html?mode=${mode}`;
+
+    const textarea = document.getElementById('note-body');
+    
+    // Set default value if no note exists
+    if (state.note) {
+      textarea.value = state.note;
+    } else {
+      textarea.value = "Dear ";
+    }
+
+    // ─── Actions ───────────────────────────────
+    document.getElementById('btn-next').addEventListener('click', () => {
+      saveBuilderState({
+        note: textarea.value
+      });
+      window.location.href = `./p.html?mode=${mode}`;
+    });
+  </script>
+</body>
+</html>

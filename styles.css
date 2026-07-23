@@ -1,0 +1,760 @@
+/* ============================================
+   FLOWERS FOR YOUR LOVED ONES — Global Styles
+   ============================================ */
+
+/* CSS Reset & Base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg-dark: #f5f3ff; /* violet-50 */
+  --bg-panel: rgba(255, 255, 255, 0.6);
+  --bg-panel-solid: #ffffff;
+  --text-primary: #4c1d95; /* violet-900 */
+  --text-muted: #7c3aed; /* violet-600 */
+  --text-light: #a78bfa; /* violet-400 */
+  --border-color: rgba(124, 58, 237, 0.2);
+  --border-light: rgba(124, 58, 237, 0.1);
+  --accent-pink: #c4b5fd; /* subtle violet-300 */
+  --accent-badge-text: #4c1d95; /* deep violet text for badge */
+  
+  --font-serif: Georgia, 'Times New Roman', Times, serif;
+  --font-sans: system-ui, -apple-system, sans-serif;
+  
+  --transition-fast: 150ms ease;
+  --transition-medium: 300ms ease;
+  --transition-slow: 700ms ease;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: normal;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-size: inherit;
+}
+
+/* ============================================
+   Layout
+   ============================================ */
+
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+  min-height: 100vh;
+}
+
+.page-content {
+  padding: 1rem 0.5rem;
+  margin: 0 auto;
+  max-width: 48rem;
+  text-align: center;
+  width: 100%;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+  margin: 0 auto;
+  max-width: 48rem;
+  width: 100%;
+}
+
+/* ============================================
+   Typography & Branding
+   ============================================ */
+
+.brand-title {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  line-height: 1.2;
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+}
+
+.brand-title-small {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  margin: 0.5rem 0;
+  color: var(--text-primary);
+}
+
+.tagline {
+  margin: 0.5rem 0 1rem;
+  font-size: 1rem;
+  color: var(--text-muted);
+  font-style: italic;
+  font-family: var(--font-serif);
+}
+
+/* ============================================
+   Hero Section
+   ============================================ */
+
+.hero-flower {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  margin: 0 auto 1rem;
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,0.3));
+}
+
+/* ============================================
+   Buttons
+   ============================================ */
+
+.btn {
+  display: inline-block;
+  font-size: 0.875rem;
+  padding: 0.75rem 1.5rem;
+  margin: 0.25rem;
+  border-radius: 9999px;
+  transition: all var(--transition-fast);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  width: 100%;
+  max-width: 340px;
+  font-weight: 500;
+}
+
+.btn-primary {
+  background-color: var(--accent-pink);
+  color: var(--bg-dark);
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(217, 70, 239, 0.4);
+}
+
+.btn-secondary {
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  background: var(--bg-panel);
+  backdrop-filter: blur(8px);
+}
+
+.btn-secondary:hover {
+  background-color: var(--border-color);
+  color: var(--bg-dark);
+}
+
+.btn-text {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  color: var(--text-muted);
+  background: transparent;
+}
+
+.btn-text:hover {
+  color: var(--text-primary);
+}
+
+.btn-disabled {
+  background-color: var(--bg-panel-solid);
+  color: var(--text-light);
+  cursor: not-allowed;
+  pointer-events: none;
+  border: 1px solid var(--border-light);
+}
+
+.btn-small {
+  font-size: 0.75rem;
+  padding: 0.5rem 1rem;
+  width: auto;
+}
+
+@media (min-width: 768px) {
+  .btn-small {
+    font-size: 0.875rem;
+  }
+}
+
+.btn-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-group-horizontal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* ============================================
+   Flower Grid (Builder)
+   ============================================ */
+
+.section-heading {
+  margin-bottom: 0.25rem;
+  font-size: 1.25rem;
+}
+
+.section-subtitle {
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.flower-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  align-items: center;
+  min-height: 200px;
+}
+
+.flower-card {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  transition: transform var(--transition-medium);
+}
+
+.flower-card:hover .flower-img-wrapper {
+  transform: translateY(-8px);
+  filter: brightness(1.2);
+}
+
+.flower-card.selected .flower-img-wrapper {
+  transform: translateY(-8px);
+}
+
+.flower-img-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-medium);
+  overflow: hidden;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+}
+
+/* Varying flower sizes like the original */
+.flower-img-wrapper.size-sm { width: 90px; height: 90px; }
+.flower-img-wrapper.size-md { width: 110px; height: 110px; }
+.flower-img-wrapper.size-lg { width: 130px; height: 130px; }
+
+.flower-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Selection badge */
+.flower-badge {
+  display: flex;
+  position: absolute;
+  top: 0;
+  right: 0;
+  justify-content: center;
+  align-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 50%;
+  background-color: var(--accent-pink);
+  color: var(--accent-badge-text);
+  z-index: 5;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Selection pills */
+.selection-area {
+  margin-top: 1rem;
+}
+
+.selection-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.pill {
+  padding: 0.35rem 0.875rem;
+  font-size: 0.875rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  background: var(--bg-panel);
+  backdrop-filter: blur(4px);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.pill:hover {
+  background-color: var(--accent-pink);
+  color: var(--bg-dark);
+  border-color: var(--accent-pink);
+}
+
+/* Counter */
+.counter-text {
+  font-size: 1rem;
+  margin-top: 1rem;
+  color: var(--accent-pink);
+  font-weight: 500;
+}
+
+/* Next button area */
+.nav-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: center;
+  margin: 1rem auto;
+}
+
+/* ============================================
+   Bush / Bouquet Arrangement
+   ============================================ */
+
+.bouquet-display {
+  text-align: center;
+}
+
+.bouquet-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 32rem;
+  margin: 0 auto;
+  background-color: var(--bg-panel-solid);
+  border-radius: 1000px;
+  box-shadow: inset 0 0 50px rgba(126, 34, 206, 0.1), 0 20px 40px rgba(76, 29, 149, 0.15);
+}
+
+.bouquet-frame {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 0;
+  margin: 1rem 0;
+}
+
+.bouquet-area {
+  position: relative;
+  width: 400px;
+  max-width: 100%;
+  min-height: 320px;
+}
+
+
+.bush-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  max-width: 120%;
+  height: auto;
+  opacity: 1;
+}
+
+
+.flowers-layer {
+  display: flex;
+  flex-wrap: wrap-reverse;
+  width: 260px;
+  justify-content: center;
+  align-items: flex-end;
+  margin: 0 auto;
+  position: relative;
+  gap: 0;
+  z-index: 5;
+}
+
+.flowers-layer > div {
+  flex-shrink: 0;
+}
+
+.bouquet-flower {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+}
+
+.bouquet-flower img {
+  position: relative;
+  z-index: 5;
+  transition: transform var(--transition-slow);
+  filter: drop-shadow(0 8px 12px rgba(76, 29, 149, 0.3));
+}
+
+.bouquet-flower img:hover {
+  transform: scale(1.1);
+}
+
+/* ============================================
+   Arrange Mode Toggle & Manual Mode
+   ============================================ */
+
+.arrange-mode-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  margin: 0.5rem 0 1rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 9999px;
+  overflow: hidden;
+  max-width: 280px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.arrange-mode-btn {
+  flex: 1;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
+  font-weight: 500;
+}
+
+.arrange-mode-btn.active {
+  background: var(--text-primary);
+  color: var(--bg-dark);
+}
+
+.arrange-mode-btn:not(.active):hover {
+  background: var(--border-light);
+  color: var(--text-primary);
+}
+
+/* Manual mode — flowers become draggable */
+.bouquet-area.manual-mode .bouquet-flower {
+  cursor: grab;
+  position: relative;
+}
+
+.bouquet-area.manual-mode .bouquet-flower img {
+  transition: none; /* kill the 700ms transition — causes drag lag */
+}
+
+.bouquet-area.manual-mode .bouquet-flower.dragging {
+  cursor: grabbing;
+  z-index: 50;
+}
+
+.bouquet-area.manual-mode .bouquet-flower.dragging img {
+  filter: drop-shadow(0 12px 20px rgba(76, 29, 149, 0.5));
+}
+
+.bouquet-area.manual-mode .bouquet-flower.selected-flower {
+  z-index: 40;
+}
+
+.bouquet-area.manual-mode .bouquet-flower.selected-flower img {
+  filter: drop-shadow(0 0 8px rgba(124, 58, 237, 0.8)) drop-shadow(0 8px 12px rgba(76, 29, 149, 0.3));
+}
+
+.bouquet-area.manual-mode .bouquet-flower img:hover {
+  transform: none;
+}
+
+/* Rotation controls */
+.rotation-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.5rem 0;
+}
+
+.rotation-controls .rot-btn {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.rotation-controls .rot-btn:hover {
+  background: var(--text-primary);
+  color: var(--bg-dark);
+  border-color: var(--text-primary);
+}
+
+.rotation-controls .rot-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  min-width: 3rem;
+  text-align: center;
+}
+
+.manual-hint {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  font-style: italic;
+  margin: 0.25rem 0 0.5rem;
+  font-family: var(--font-serif);
+}
+
+/* Bush style selector */
+.bush-selector {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.bush-option {
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  border: 1px solid var(--border-light);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  background: var(--bg-panel);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.bush-option:hover {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+}
+
+.bush-option.active {
+  background-color: var(--text-primary);
+  color: var(--bg-dark);
+  border-color: var(--text-primary);
+}
+
+/* ============================================
+   Note Card
+   ============================================ */
+
+.note-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin: 0 auto;
+  max-width: 28rem;
+  width: 100%;
+  box-shadow: 0 20px 40px rgba(76, 29, 149, 0.15);
+  text-align: left;
+}
+
+.note-card.preview-mode {
+  transform: translateY(-50px) rotate(-2deg);
+  transition: all var(--transition-medium);
+}
+
+.note-card textarea {
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  color: var(--text-primary);
+  width: 100%;
+  resize: vertical;
+  line-height: 1.6;
+  min-height: 120px;
+}
+
+.note-card textarea::placeholder {
+  color: var(--text-light);
+  font-style: italic;
+}
+
+.note-display {
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  color: var(--text-primary);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+/* ============================================
+   Animations
+   ============================================ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 0.7s ease both;
+}
+
+/* ============================================
+   Share Link Section
+   ============================================ */
+
+.share-section {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.share-link-box {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.share-link-input {
+  flex: 1;
+  padding: 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.7);
+  color: var(--text-primary);
+}
+
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent-pink);
+  color: var(--bg-dark);
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  z-index: 2000;
+  box-shadow: 0 10px 20px rgba(217, 70, 239, 0.3);
+  animation: fadeInUp 0.3s ease;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+
+@media (max-width: 640px) {
+  .page-content {
+    padding: 1.5rem 0.5rem;
+  }
+  
+  .brand-title {
+    font-size: 2rem;
+  }
+
+  .flower-img-wrapper.size-sm { width: 70px; height: 70px; }
+  .flower-img-wrapper.size-md { width: 85px; height: 85px; }
+  .flower-img-wrapper.size-lg { width: 100px; height: 100px; }
+
+  .bouquet-area {
+    min-height: 240px;
+  }
+
+  .bush-bg {
+    width: 320px;
+  }
+
+  .flowers-layer {
+    width: 180px;
+  }
+
+  .flowers-layer > div {
+    margin-top: -2rem;
+    margin-left: -0.5rem;
+  }
+
+  .note-card {
+    max-width: 90%;
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .flower-img-wrapper.size-sm { width: 60px; height: 60px; }
+  .flower-img-wrapper.size-md { width: 70px; height: 70px; }
+  .flower-img-wrapper.size-lg { width: 80px; height: 80px; }
+
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+  }
+}

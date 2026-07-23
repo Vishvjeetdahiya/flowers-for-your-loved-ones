@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>build your bouquet — flowers for your loved ones</title>
+  <meta name="description" content="Pick your flowers and send a beautiful digital bouquet to someone special.">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="container animate-fade-in">
+    <!-- Header -->
+    <a href="./index.html" class="logo-link">
+      <h2 class="brand-title-small" style="text-align: center;">flowers for your loved ones</h2>
+    </a>
+
+    <!-- Builder Area -->
+    <div style="flex-grow:1; padding: 0.5rem 0;">
+      <div style="height:100%; text-align:center;">
+
+        <h2 class="section-heading">Pick 3 to 10 BLOOMS</h2>
+        <p class="section-subtitle">Click on a flower to select it. Click again to add more.</p>
+
+        <!-- Counter -->
+        <p class="counter-text" id="counter">0 / 10 selected</p>
+
+        <!-- Flower Grid -->
+        <div class="flower-grid" id="flower-grid"></div>
+
+        <!-- Selected Pills -->
+        <div class="selection-area">
+          <div class="selection-pills" id="selection-pills"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-buttons">
+      <a href="./index.html" class="btn btn-small btn-secondary" style="width:auto;">BACK</a>
+      <button class="btn btn-small btn-disabled" id="btn-next" disabled>NEXT</button>
+    </div>
+  </main>
+
+  <script src="./app.js"></script>
+  <script>
+    // ─── Builder State ─────────────────────────
+    const mode = getMode();
+    const state = loadBuilderState();
+    const selections = {}; 
+
+    // If returning from a future step, repopulate selections
+    if (state && state.flowers) {
+      state.flowers.forEach(id => {
+        selections[id] = (selections[id] || 0) + 1;
+      });
+    }
+
+    function getTotalCount() {
+      return Object.values(selections).reduce((sum, c) => sum + c, 0);
+    }
+
+    function updateUI() {
+      const total = getTotalCount();
+
+      // Counter
+      document.getElementById('counter').textContent = `${total} / 10 selected`;
+
+      // Update grid badges
+      FLOWERS.forEach(flower => {
+        const card = document.querySelector(`[data-flower="${flower.id}"]`);
+        if (!card) return;
+        const badge = card.querySelector('.flower-badge');
+        const count = selections[flower.id] || 0;
+
+        if (count > 0) {
+          card.classList.add('selected');
+          if (badge) {
+            badge.textContent = count;
+            badge.style.display = 'flex';
+          }
+        } else {
+          card.classList.remove('selected');
+          if (badge) badge.style.display = 'none';
+        }
+      });
+
+      // Selection pills
+      const pillsContainer = document.getElementById('selection-pills');
+      pillsContainer.innerHTML = '';
+      Object.entries(selections).forEach(([id, count]) => {
+        if (count <= 0) return;
+        const flower = FLOWERS.find(f => f.id === id);
+        const pill = document.createElement('div');
+        pill.className = 'pill';
+        pill.textContent = `${flower.name} x${count}`;
+        pill.addEventListener('click', () => {
+          selections[id]--;
+          if (selections[id] <= 0) delete selections[id];
+          updateUI();
+        });
+        pillsContainer.appendChild(pill);
+      });
+
+      // Next button (Min 3, Max 10)
+      const nextBtn = document.getElementById('btn-next');
+      if (total >= 3 && total <= 10) {
+        nextBtn.disabled = false;
+        nextBtn.classList.remove('btn-disabled');
+        nextBtn.classList.add('btn-primary');
+      } else {
+        nextBtn.disabled = true;
+        nextBtn.classList.add('btn-disabled');
+        nextBtn.classList.remove('btn-primary');
+      }
+    }
+
+    function handleFlowerClick(flowerId) {
+      const total = getTotalCount();
+      if (total >= 10) {
+        showToast("Maximum 10 blooms reached!");
+        return; 
+      }
+      selections[flowerId] = (selections[flowerId] || 0) + 1;
+      updateUI();
+    }
+
+    // ─── Build Grid ────────────────────────────
+    function buildGrid() {
+      const grid = document.getElementById('flower-grid');
+      grid.innerHTML = '';
+
+      FLOWERS.forEach(flower => {
+        const card = document.createElement('button');
+        card.className = 'flower-card';
+        card.dataset.flower = flower.id;
+        card.title = `${flower.name} — ${flower.meaning}`;
+
+        card.innerHTML = `
+          <div class="flower-img-wrapper ${flower.sizeClass}">
+            <img
+              src="${getFlowerImagePath(flower.id, mode)}"
+              alt="${flower.name}"
+              width="${flower.sizeClass === 'size-sm' ? 128 : flower.sizeClass === 'size-lg' ? 192 : 160}"
+              height="${flower.sizeClass === 'size-sm' ? 128 : flower.sizeClass === 'size-lg' ? 192 : 160}"
+              loading="eager"
+            >
+          </div>
+          <div class="flower-badge" style="display:none;">0</div>
+        `;
+
+        card.addEventListener('click', () => handleFlowerClick(flower.id));
+        grid.appendChild(card);
+      });
+    }
+
+    // ─── Next Button ───────────────────────────
+    document.getElementById('btn-next').addEventListener('click', () => {
+      const total = getTotalCount();
+      if (total < 3 || total > 10) return;
+
+      // Build flower list
+      const flowerList = [];
+      Object.entries(selections).forEach(([id, count]) => {
+        for (let i = 0; i < count; i++) {
+          flowerList.push(id);
+        }
+      });
+
+      saveBuilderState({
+        mode: mode,
+        flowers: flowerList
+      });
+
+      window.location.href = `./arrange.html?mode=${mode}`;
+    });
+
+    // ─── Init ──────────────────────────────────
+    buildGrid();
+    updateUI();
+  </script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>your bouquet — flowers for your loved ones</title>
+  <meta name="description" content="A digital flower bouquet.">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="page-wrapper" style="min-height: auto;">
+    <div class="animate-fade-in" style="width:100%; max-width:48rem; margin:0 auto; text-align:center; padding:0.5rem 0.5rem 2rem;">
+
+      <!-- Header -->
+      <a href="./index.html" class="logo-link">
+        <h2 class="brand-title-small" style="text-align: center;">flowers for your loved ones</h2>
+      </a>
+
+      <h2 class="section-heading" id="preview-heading" style="margin-top:0.5rem;">YOUR BOUQUET</h2>
+
+      <!-- Bouquet Preview -->
+      <div class="bouquet-display" style="margin-top:1rem;">
+        <div class="bouquet-container">
+          <div class="bouquet-frame">
+            <div id="bouquet-preview"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Note Card -->
+      <div id="note-area" style="display:none; margin: 0 auto; max-width:28rem; position: relative; z-index: 20;">
+        <div class="note-card preview-mode">
+          <div class="note-display" id="view-body"></div>
+        </div>
+      </div>
+
+      <!-- Builder Actions (Shown if you just built it) -->
+      <div id="builder-actions" style="display:none; margin-top:1.5rem; position: relative; z-index: 20;">
+        <div class="share-section">
+          <p style="font-size:1rem; font-weight:500;">Ready to send?</p>
+          <p style="font-size:0.875rem; color:var(--text-muted); margin-bottom:1rem;">Generate a link to share this exact bouquet.</p>
+          <button class="btn btn-primary" id="btn-generate">GENERATE SHARE LINK</button>
+          
+          <div class="share-link-box" id="share-box" style="display:none;">
+            <input type="text" class="share-link-input" id="share-link" readonly>
+            <button class="btn btn-small btn-secondary" id="btn-copy">COPY</button>
+          </div>
+        </div>
+        <div style="margin-top:1rem;">
+          <a href="./note.html" class="btn btn-small btn-text" id="btn-back">← EDIT NOTE</a>
+        </div>
+      </div>
+
+      <!-- Receiver Actions (Shown if opened via share link) -->
+      <div id="receiver-actions" style="display:none; margin-top:1.5rem; position: relative; z-index: 20;">
+        <p style="font-size:0.875rem; color:var(--text-muted); margin-bottom:1rem;">
+          made with flowers for your loved ones
+        </p>
+        <a href="./index.html" class="btn btn-secondary">BUILD YOUR OWN BOUQUET</a>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+  <script>
+    // ─── Detect Mode: Builder vs Receiver ────────
+    const hash = window.location.hash.substring(1);
+    let bouquetData = null;
+    let isReceiver = false;
+
+    if (hash) {
+      // Receiver Mode
+      isReceiver = true;
+      bouquetData = decodeBouquetFromURL(hash);
+    } else {
+      // Builder Mode
+      bouquetData = loadBuilderState();
+    }
+
+    if (!bouquetData || !bouquetData.flowers || bouquetData.flowers.length === 0) {
+      document.getElementById('bouquet-preview').innerHTML = `
+        <div style="padding: 2rem 1rem;">
+          <p>No bouquet found.</p>
+          <a href="./index.html" class="btn btn-small btn-primary" style="margin-top:1rem;">START OVER</a>
+        </div>
+      `;
+    } else {
+      // Set heading
+      const heading = document.getElementById('preview-heading');
+      if (isReceiver) {
+        heading.textContent = "A BOUQUET JUST FOR YOU";
+        document.title = "someone made you a bouquet — flowers for your loved ones";
+        document.getElementById('receiver-actions').style.display = 'block';
+      } else {
+        heading.textContent = "YOUR COMPLETED BOUQUET";
+        document.getElementById('builder-actions').style.display = 'block';
+        // Set back button link
+        document.getElementById('btn-back').href = `./note.html?mode=${bouquetData.mode || 'color'}`;
+      }
+
+      // Render bouquet
+      const container = document.getElementById('bouquet-preview');
+      renderBouquetComposition(container, bouquetData);
+
+      // Show note if present and not purely whitespace
+      if (bouquetData.note && bouquetData.note.trim() !== '') {
+        document.getElementById('note-area').style.display = 'block';
+        document.getElementById('view-body').textContent = bouquetData.note;
+      }
+    }
+
+    // ─── Generate Link (Builder Only) ──────────
+    if (!isReceiver && bouquetData) {
+      document.getElementById('btn-generate').addEventListener('click', async () => {
+        const shareURL = getShareURL(bouquetData);
+        document.getElementById('share-link').value = shareURL;
+        
+        document.getElementById('btn-generate').style.display = 'none';
+        document.getElementById('share-box').style.display = 'flex';
+        
+        const success = await copyToClipboard(shareURL);
+        if (success) showToast('LINK COPIED!');
+      });
+
+      document.getElementById('btn-copy').addEventListener('click', async () => {
+        const link = document.getElementById('share-link').value;
+        const success = await copyToClipboard(link);
+        if (success) showToast('LINK COPIED!');
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>arrange your bouquet — flowers for your loved ones</title>
+  <meta name="description" content="Arrange your digital flower bouquet.">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="page-wrapper animate-fade-in" style="min-height: auto;">
+    <div style="width:100%; max-width:48rem; margin:0 auto; text-align:center; padding:0.5rem 0.5rem 2rem;">
+
+      <!-- Header -->
+      <a href="./index.html" class="logo-link">
+        <h2 class="brand-title-small" style="text-align: center;">flowers for your loved ones</h2>
+      </a>
+
+      <h2 class="section-heading" style="margin-top:0.5rem;">ARRANGE YOUR BOUQUET</h2>
+      <p class="section-subtitle">Choose random or manual arrangement.</p>
+
+      <!-- Bush Style Selector -->
+      <div class="bush-selector" id="bush-selector" style="position: relative; z-index: 20;">
+        <button class="bush-option active" data-bush="bush-1">STYLE 1</button>
+        <button class="bush-option" data-bush="bush-2">STYLE 2</button>
+        <button class="bush-option" data-bush="bush-3">STYLE 3</button>
+      </div>
+
+      <!-- Arrange Mode Toggle -->
+      <div class="arrange-mode-toggle" id="arrange-mode-toggle" style="position: relative; z-index: 20;">
+        <button class="arrange-mode-btn active" data-mode="random">⟳ RANDOM</button>
+        <button class="arrange-mode-btn" data-mode="manual">✋ MANUAL</button>
+      </div>
+
+      <!-- Random mode controls -->
+      <div id="random-controls" style="margin-bottom: 0.5rem; position: relative; z-index: 20;">
+        <button class="btn btn-small btn-secondary" id="btn-reshuffle" style="padding: 0.5rem 1rem; border-radius: 9999px;">
+          ⟳ RESHUFFLE FLOWERS
+        </button>
+      </div>
+
+      <!-- Manual mode controls -->
+      <div id="manual-controls" style="display:none; position: relative; z-index: 20;">
+        <p class="manual-hint">Drag flowers to reposition. Tap a flower then use controls to rotate.</p>
+        <div class="rotation-controls" id="rotation-controls" style="display:none;">
+          <button class="rot-btn" id="btn-rot-left">↺</button>
+          <span class="rot-label" id="rot-label">0°</span>
+          <button class="rot-btn" id="btn-rot-right">↻</button>
+        </div>
+      </div>
+
+      <!-- Bouquet Preview -->
+      <div class="bouquet-display">
+        <div class="bouquet-container">
+          <div class="bouquet-frame">
+            <div id="bouquet-preview"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="btn-group-horizontal" style="padding:1rem 0 0.5rem; position: relative; z-index: 20;">
+        <a href="./bouquet.html" class="btn btn-small btn-secondary" id="btn-back" style="width:auto;">BACK</a>
+        <button class="btn btn-small btn-primary" id="btn-next" style="width:auto;">NEXT</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+  <script>
+    // ─── State ─────────────────────────────────
+    const mode = getMode();
+    const state = loadBuilderState();
+    
+    if (!state || !state.flowers || state.flowers.length < 3) {
+      window.location.href = `./bouquet.html?mode=${mode}`;
+    }
+
+    let bushStyle = state.bushStyle || 'bush-1';
+    let arrangeMode = 'random';
+    let selectedFlowerIndex = -1;
+
+    // Drag state — single shared state (no per-flower listeners)
+    let dragState = {
+      active: false,
+      index: -1,
+      wrapper: null,
+      startX: 0,
+      startY: 0,
+      origOffsetX: 0,
+      origOffsetY: 0,
+      moved: false
+    };
+
+    // Set back button mode
+    document.getElementById('btn-back').href = `./bouquet.html?mode=${mode}`;
+
+    // Set initial active bush
+    document.querySelectorAll('.bush-option').forEach(btn => {
+      if(btn.dataset.bush === bushStyle) {
+        document.querySelectorAll('.bush-option').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      }
+    });
+
+    let currentFlowers = [...state.flowers];
+    let currentLayout = state.layout || null;
+
+    function generateLayout() {
+      return currentFlowers.map(() => ({
+        rotation: (Math.random() * 60) - 30,
+        scale: 0.9 + (Math.random() * 0.2),
+        offsetX: (Math.random() * 20) - 10,
+        offsetY: (Math.random() * 20) - 10
+      }));
+    }
+
+    function renderPreview(forceReshuffle = false) {
+      if (!currentLayout || forceReshuffle) {
+        for (let i = currentFlowers.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [currentFlowers[i], currentFlowers[j]] = [currentFlowers[j], currentFlowers[i]];
+        }
+        currentLayout = generateLayout();
+      }
+
+      const bouquetData = {
+        mode: mode,
+        bushStyle: bushStyle,
+        flowers: currentFlowers,
+        layout: currentLayout
+      };
+
+      const container = document.getElementById('bouquet-preview');
+      renderBouquetComposition(container, bouquetData);
+
+      // After render, set up manual mode class and click handlers
+      if (arrangeMode === 'manual') {
+        setupManualMode();
+      }
+    }
+
+    // ─── Manual Mode Setup ────────────────────
+    function setupManualMode() {
+      const area = document.querySelector('.bouquet-area');
+      if (!area) return;
+      area.classList.add('manual-mode');
+
+      // Disable the slow hover transition in manual mode
+      const imgs = area.querySelectorAll('.bouquet-flower img');
+      imgs.forEach(img => {
+        img.style.transition = 'none';
+      });
+
+      // Only attach click listeners to each flower (lightweight)
+      const wrappers = area.querySelectorAll('.bouquet-flower');
+      wrappers.forEach((wrapper, index) => {
+        wrapper.dataset.flowerIndex = index;
+      });
+    }
+
+    function selectFlower(index) {
+      selectedFlowerIndex = index;
+      document.querySelectorAll('.bouquet-flower').forEach((el, i) => {
+        el.classList.toggle('selected-flower', i === index);
+      });
+      document.getElementById('rotation-controls').style.display = 'flex';
+      updateRotLabel();
+    }
+
+    function updateRotLabel() {
+      if (selectedFlowerIndex >= 0 && currentLayout[selectedFlowerIndex]) {
+        document.getElementById('rot-label').textContent = `${Math.round(currentLayout[selectedFlowerIndex].rotation)}°`;
+      }
+    }
+
+    function applyFlowerTransform(index) {
+      const wrappers = document.querySelectorAll('.bouquet-flower');
+      if (!wrappers[index]) return;
+      const l = currentLayout[index];
+      const img = wrappers[index].querySelector('img');
+      if (img) {
+        img.style.transform = `translate(${l.offsetX || 0}px, ${l.offsetY || 0}px) rotate(${l.rotation}deg) scale(${l.scale})`;
+      }
+    }
+
+    // ─── Single Global Drag Handlers ──────────
+    // One set of listeners on document — no per-flower duplication
+    function getFlowerWrapper(el) {
+      while (el && !el.classList.contains('bouquet-flower')) {
+        el = el.parentElement;
+      }
+      return el;
+    }
+
+    function onDragStart(clientX, clientY, target) {
+      if (arrangeMode !== 'manual') return;
+      const wrapper = getFlowerWrapper(target);
+      if (!wrapper || wrapper.dataset.flowerIndex === undefined) return;
+
+      const index = parseInt(wrapper.dataset.flowerIndex);
+      const layout = currentLayout[index];
+
+      dragState = {
+        active: true,
+        index: index,
+        wrapper: wrapper,
+        startX: clientX,
+        startY: clientY,
+        origOffsetX: layout.offsetX || 0,
+        origOffsetY: layout.offsetY || 0,
+        moved: false
+      };
+      wrapper.classList.add('dragging');
+    }
+
+    function onDragMove(clientX, clientY) {
+      if (!dragState.active) return;
+      const dx = clientX - dragState.startX;
+      const dy = clientY - dragState.startY;
+
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+        dragState.moved = true;
+      }
+
+      currentLayout[dragState.index].offsetX = dragState.origOffsetX + dx;
+      currentLayout[dragState.index].offsetY = dragState.origOffsetY + dy;
+      applyFlowerTransform(dragState.index);
+    }
+
+    function onDragEnd() {
+      if (!dragState.active) return;
+      if (dragState.wrapper) {
+        dragState.wrapper.classList.remove('dragging');
+      }
+      // If it was a click (no movement), select the flower
+      if (!dragState.moved) {
+        selectFlower(dragState.index);
+      }
+      dragState.active = false;
+    }
+
+    // Mouse
+    document.addEventListener('mousedown', (e) => {
+      if (arrangeMode !== 'manual') return;
+      const wrapper = getFlowerWrapper(e.target);
+      if (!wrapper) return;
+      e.preventDefault();
+      onDragStart(e.clientX, e.clientY, e.target);
+    });
+    document.addEventListener('mousemove', (e) => {
+      if (!dragState.active) return;
+      e.preventDefault();
+      onDragMove(e.clientX, e.clientY);
+    });
+    document.addEventListener('mouseup', () => {
+      onDragEnd();
+    });
+
+    // Touch
+    document.addEventListener('touchstart', (e) => {
+      if (arrangeMode !== 'manual') return;
+      const wrapper = getFlowerWrapper(e.target);
+      if (!wrapper) return;
+      const touch = e.touches[0];
+      onDragStart(touch.clientX, touch.clientY, e.target);
+    }, { passive: true });
+    document.addEventListener('touchmove', (e) => {
+      if (!dragState.active) return;
+      e.preventDefault(); // prevent scroll while dragging
+      const touch = e.touches[0];
+      onDragMove(touch.clientX, touch.clientY);
+    }, { passive: false });
+    document.addEventListener('touchend', () => {
+      onDragEnd();
+    });
+
+    // ─── UI Events ────────────────────────────
+    // Bush style buttons
+    document.querySelectorAll('.bush-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.bush-option').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        bushStyle = btn.dataset.bush;
+        renderPreview();
+      });
+    });
+
+    // Arrange mode toggle
+    document.querySelectorAll('.arrange-mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.arrange-mode-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        arrangeMode = btn.dataset.mode;
+
+        document.getElementById('random-controls').style.display = arrangeMode === 'random' ? 'block' : 'none';
+        document.getElementById('manual-controls').style.display = arrangeMode === 'manual' ? 'block' : 'none';
+
+        selectedFlowerIndex = -1;
+        document.getElementById('rotation-controls').style.display = 'none';
+        renderPreview();
+      });
+    });
+
+    // Reshuffle
+    document.getElementById('btn-reshuffle').addEventListener('click', () => {
+      renderPreview(true);
+    });
+
+    // Rotation controls
+    document.getElementById('btn-rot-left').addEventListener('click', () => {
+      if (selectedFlowerIndex < 0) return;
+      currentLayout[selectedFlowerIndex].rotation -= 15;
+      applyFlowerTransform(selectedFlowerIndex);
+      updateRotLabel();
+    });
+
+    document.getElementById('btn-rot-right').addEventListener('click', () => {
+      if (selectedFlowerIndex < 0) return;
+      currentLayout[selectedFlowerIndex].rotation += 15;
+      applyFlowerTransform(selectedFlowerIndex);
+      updateRotLabel();
+    });
+
+    // Next button
+    document.getElementById('btn-next').addEventListener('click', () => {
+      saveBuilderState({
+        bushStyle: bushStyle,
+        flowers: currentFlowers,
+        layout: currentLayout
+      });
+      window.location.href = `./note.html?mode=${mode}`;
+    });
+
+    // ─── Init ──────────────────────────────────
+    renderPreview();
+  </script>
+</body>
+</html>
