@@ -279,7 +279,7 @@ function getShareURL(bouquet) {
   const encoded = encodeBouquetToURL(bouquet);
   const base = window.location.href.split('?')[0].split('#')[0];
   const viewBase = base.replace(/[^/]*$/, 'p.html');
-  return `${viewBase}?d=${encoded}`;
+  return `${viewBase}#${encoded}`;
 }
 
 // ─── Toast Notification ──────────────────────
@@ -320,46 +320,4 @@ async function copyToClipboard(text) {
       return false;
     }
   }
-}
-
-// ─── URL Shortener ──────────────────────────
-async function shortenURL(longURL) {
-  // Try spoo.me first (free, CORS-enabled, no preview pages)
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 6000);
-    const params = new URLSearchParams();
-    params.append('url', longURL);
-    const res = await fetch('https://spoo.me/', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: params,
-      signal: controller.signal
-    });
-    clearTimeout(timeout);
-    if (res.ok) {
-      const data = await res.json();
-      if (data && data.short_url) return data.short_url;
-    }
-  } catch (_) {}
-
-  // Fallback: TinyURL
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
-    const res = await fetch(
-      `https://tinyurl.com/api-create.php?url=${encodeURIComponent(longURL)}`,
-      { signal: controller.signal }
-    );
-    clearTimeout(timeout);
-    if (res.ok) {
-      const shortURL = (await res.text()).trim();
-      if (shortURL && shortURL.startsWith('https://tinyurl.com/')) return shortURL;
-    }
-  } catch (_) {}
-
-  return null;
 }
