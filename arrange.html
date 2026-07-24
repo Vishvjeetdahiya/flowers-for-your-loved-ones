@@ -41,9 +41,13 @@
 
       <!-- Manual mode controls -->
       <div id="manual-controls" style="display:none; position: relative; z-index: 20;">
-        <p class="manual-hint">Drag flowers to reposition. Tap a flower then use controls to rotate.</p>
+        <p class="manual-hint">Drag flowers to reposition. Tap a flower then use controls to rotate and scale.</p>
         <div class="rotation-controls" id="rotation-controls" style="display:none;">
-          <button class="rot-btn" id="btn-rot-left">↺</button>
+          <button class="rot-btn" id="btn-scale-down">-</button>
+          <span class="rot-label" id="scale-label">100%</span>
+          <button class="rot-btn" id="btn-scale-up">+</button>
+          
+          <button class="rot-btn" id="btn-rot-left" style="margin-left: 0.5rem;">↺</button>
           <span class="rot-label" id="rot-label">0°</span>
           <button class="rot-btn" id="btn-rot-right">↻</button>
         </div>
@@ -166,12 +170,14 @@
         el.classList.toggle('selected-flower', i === index);
       });
       document.getElementById('rotation-controls').style.display = 'flex';
-      updateRotLabel();
+      updateControlsLabel();
     }
 
-    function updateRotLabel() {
+    function updateControlsLabel() {
       if (selectedFlowerIndex >= 0 && currentLayout[selectedFlowerIndex]) {
-        document.getElementById('rot-label').textContent = `${Math.round(currentLayout[selectedFlowerIndex].rotation)}°`;
+        const layout = currentLayout[selectedFlowerIndex];
+        document.getElementById('rot-label').textContent = `${Math.round(layout.rotation)}°`;
+        document.getElementById('scale-label').textContent = `${Math.round((layout.scale || 1) * 100)}%`;
       }
     }
 
@@ -313,14 +319,31 @@
       if (selectedFlowerIndex < 0) return;
       currentLayout[selectedFlowerIndex].rotation -= 15;
       applyFlowerTransform(selectedFlowerIndex);
-      updateRotLabel();
+      updateControlsLabel();
     });
 
     document.getElementById('btn-rot-right').addEventListener('click', () => {
       if (selectedFlowerIndex < 0) return;
       currentLayout[selectedFlowerIndex].rotation += 15;
       applyFlowerTransform(selectedFlowerIndex);
-      updateRotLabel();
+      updateControlsLabel();
+    });
+
+    // Scale controls
+    document.getElementById('btn-scale-down').addEventListener('click', () => {
+      if (selectedFlowerIndex < 0) return;
+      const layout = currentLayout[selectedFlowerIndex];
+      layout.scale = Math.max(0.5, (layout.scale || 1) - 0.1);
+      applyFlowerTransform(selectedFlowerIndex);
+      updateControlsLabel();
+    });
+
+    document.getElementById('btn-scale-up').addEventListener('click', () => {
+      if (selectedFlowerIndex < 0) return;
+      const layout = currentLayout[selectedFlowerIndex];
+      layout.scale = Math.min(2.5, (layout.scale || 1) + 0.1);
+      applyFlowerTransform(selectedFlowerIndex);
+      updateControlsLabel();
     });
 
     // Next button

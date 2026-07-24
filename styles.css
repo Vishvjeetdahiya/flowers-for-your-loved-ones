@@ -721,25 +721,10 @@ button {
     font-size: 2rem;
   }
 
-  .flower-img-wrapper.size-sm { width: 70px; height: 70px; }
-  .flower-img-wrapper.size-md { width: 85px; height: 85px; }
-  .flower-img-wrapper.size-lg { width: 100px; height: 100px; }
-
   .bouquet-area {
-    min-height: 240px;
-  }
-
-  .bush-bg {
-    width: 320px;
-  }
-
-  .flowers-layer {
-    width: 180px;
-  }
-
-  .flowers-layer > div {
-    margin-top: -2rem;
-    margin-left: -0.5rem;
+    transform: scale(0.8);
+    transform-origin: center center;
+    margin: -10% auto; /* Offset extra height caused by scaling */
   }
 
   .note-card {
@@ -749,9 +734,10 @@ button {
 }
 
 @media (max-width: 380px) {
-  .flower-img-wrapper.size-sm { width: 60px; height: 60px; }
-  .flower-img-wrapper.size-md { width: 70px; height: 70px; }
-  .flower-img-wrapper.size-lg { width: 80px; height: 80px; }
+  .bouquet-area {
+    transform: scale(0.7);
+    margin: -15% auto;
+  }
 
   .btn {
     padding: 0.5rem 1rem;
