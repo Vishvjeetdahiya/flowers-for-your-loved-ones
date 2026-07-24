@@ -321,3 +321,25 @@ async function copyToClipboard(text) {
     }
   }
 }
+
+// ─── URL Shortener (TinyURL) ────────────────
+async function shortenURL(longURL) {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+    const response = await fetch(
+      `https://tinyurl.com/api-create.php?url=${encodeURIComponent(longURL)}`,
+      { signal: controller.signal }
+    );
+    clearTimeout(timeout);
+    if (!response.ok) throw new Error('API error');
+    const shortURL = await response.text();
+    // Validate we got a real URL back
+    if (shortURL && shortURL.startsWith('https://tinyurl.com/')) {
+      return shortURL;
+    }
+    throw new Error('Invalid response');
+  } catch (e) {
+    return null; // Fallback: caller should handle null
+  }
+}

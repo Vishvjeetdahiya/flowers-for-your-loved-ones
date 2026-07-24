@@ -39,11 +39,31 @@
         <div class="share-section">
           <p style="font-size:1rem; font-weight:500;">Ready to send?</p>
           <p style="font-size:0.875rem; color:var(--text-muted); margin-bottom:1rem;">Generate a link to share this exact bouquet.</p>
-          <button class="btn btn-primary" id="btn-generate">GENERATE SHARE LINK</button>
           
-          <div class="share-link-box" id="share-box" style="display:none;">
-            <input type="text" class="share-link-input" id="share-link" readonly>
-            <button class="btn btn-small btn-secondary" id="btn-copy">COPY</button>
+          <!-- Initial: Generate button -->
+          <div id="share-generate">
+            <button class="btn btn-primary" id="btn-generate">GENERATE SHARE LINK</button>
+          </div>
+
+          <!-- After generate: two link options -->
+          <div id="share-results" style="display:none;">
+            <!-- Original link -->
+            <div class="share-link-row">
+              <label class="share-label">Direct link</label>
+              <div class="share-link-box">
+                <input type="text" class="share-link-input" id="share-link-original" readonly>
+                <button class="btn btn-small btn-secondary" id="btn-copy-original">COPY</button>
+              </div>
+            </div>
+
+            <!-- Short link -->
+            <div class="share-link-row" style="margin-top:0.75rem;">
+              <label class="share-label">Short link</label>
+              <div class="share-link-box">
+                <input type="text" class="share-link-input" id="share-link-short" value="generating..." readonly style="font-style:italic; color:var(--text-light);">
+                <button class="btn btn-small btn-primary" id="btn-copy-short" disabled>COPY</button>
+              </div>
+            </div>
           </div>
         </div>
         <div style="margin-top:1rem;">
@@ -112,21 +132,48 @@
 
     // ─── Generate Link (Builder Only) ──────────
     if (!isReceiver && bouquetData) {
+      const shareURL = getShareURL(bouquetData);
+
       document.getElementById('btn-generate').addEventListener('click', async () => {
-        const shareURL = getShareURL(bouquetData);
-        document.getElementById('share-link').value = shareURL;
-        
-        document.getElementById('btn-generate').style.display = 'none';
-        document.getElementById('share-box').style.display = 'flex';
-        
+        // Show results, hide generate button
+        document.getElementById('share-generate').style.display = 'none';
+        document.getElementById('share-results').style.display = 'block';
+
+        // Set original link immediately
+        document.getElementById('share-link-original').value = shareURL;
+
+        // Copy original link right away
         const success = await copyToClipboard(shareURL);
+        if (success) showToast('DIRECT LINK COPIED!');
+
+        // Start shortening in background
+        const shortURL = await shortenURL(shareURL);
+        const shortInput = document.getElementById('share-link-short');
+        const shortBtn = document.getElementById('btn-copy-short');
+
+        if (shortURL) {
+          shortInput.value = shortURL;
+          shortInput.style.fontStyle = 'normal';
+          shortInput.style.color = 'var(--text-primary)';
+          shortBtn.disabled = false;
+        } else {
+          shortInput.value = 'could not shorten — use direct link';
+          shortInput.style.fontStyle = 'italic';
+          shortInput.style.color = 'var(--text-light)';
+        }
+      });
+
+      // Copy buttons
+      document.getElementById('btn-copy-original').addEventListener('click', async () => {
+        const link = document.getElementById('share-link-original').value;
+        const success = await copyToClipboard(link);
         if (success) showToast('LINK COPIED!');
       });
 
-      document.getElementById('btn-copy').addEventListener('click', async () => {
-        const link = document.getElementById('share-link').value;
+      document.getElementById('btn-copy-short').addEventListener('click', async () => {
+        const link = document.getElementById('share-link-short').value;
         const success = await copyToClipboard(link);
-        if (success) showToast('LINK COPIED!');
+        if (success) showToast('SHORT LINK COPIED!');
       });
     }
   </script>
