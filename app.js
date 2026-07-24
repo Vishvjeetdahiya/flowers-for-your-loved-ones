@@ -279,7 +279,7 @@ function getShareURL(bouquet) {
   const encoded = encodeBouquetToURL(bouquet);
   const base = window.location.href.split('?')[0].split('#')[0];
   const viewBase = base.replace(/[^/]*$/, 'p.html');
-  return `${viewBase}#${encoded}`;
+  return `${viewBase}?d=${encoded}`;
 }
 
 // ─── Toast Notification ──────────────────────

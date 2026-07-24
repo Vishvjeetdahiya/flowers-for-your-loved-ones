@@ -85,14 +85,17 @@
   <script src="./app.js"></script>
   <script>
     // ─── Detect Mode: Builder vs Receiver ────────
-    const hash = window.location.hash.substring(1);
+    // New format: ?d=encoded  |  Old format: #encoded
+    const paramData = new URLSearchParams(window.location.search).get('d');
+    const hashData = window.location.hash.substring(1);
+    const encodedData = paramData || hashData;
     let bouquetData = null;
     let isReceiver = false;
 
-    if (hash) {
+    if (encodedData) {
       // Receiver Mode
       isReceiver = true;
-      bouquetData = decodeBouquetFromURL(hash);
+      bouquetData = decodeBouquetFromURL(encodedData);
     } else {
       // Builder Mode
       bouquetData = loadBuilderState();
