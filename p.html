@@ -129,7 +129,9 @@
 
         const shareURL = getShareURL(bouquetData);
         try {
-          const response = await fetch(`https://is.gd/create.php?format=simple&url=${encodeURIComponent(shareURL)}`);
+          // is.gd doesn't support CORS from the browser, so we route it through a free CORS proxy
+          const apiUrl = `https://is.gd/create.php?format=simple&url=${encodeURIComponent(shareURL)}`;
+          const response = await fetch(`https://corsproxy.io/?${encodeURIComponent(apiUrl)}`);
           if (response.ok) {
             const shortURL = await response.text();
             document.getElementById('share-link').value = shortURL;
