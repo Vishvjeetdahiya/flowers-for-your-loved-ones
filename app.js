@@ -324,14 +324,19 @@ async function copyToClipboard(text) {
 
 // ─── URL Shortener ──────────────────────────
 async function shortenURL(longURL) {
-  // Try Sniplinks first (free, CORS, no preview, no API key)
+  // Try spoo.me first (free, CORS-enabled, no preview pages)
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 6000);
-    const res = await fetch('https://sniplinks.in/api/public/v1/shorten', {
+    const params = new URLSearchParams();
+    params.append('url', longURL);
+    const res = await fetch('https://spoo.me/', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url: longURL }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: params,
       signal: controller.signal
     });
     clearTimeout(timeout);
@@ -341,7 +346,7 @@ async function shortenURL(longURL) {
     }
   } catch (_) {}
 
-  // Fallback: TinyURL (simple GET API)
+  // Fallback: TinyURL
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 5000);
