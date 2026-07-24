@@ -163,8 +163,7 @@ function packLayout(layout) {
 
 function unpackLayout(str, count) {
   try {
-    let padded = str.replace(/-/g, '+').replace(/_/g, '/');
-    while (padded.length % 4) padded += '=';
+    const padded = str.replace(/-/g, '+').replace(/_/g, '/');
     const binary = atob(padded);
     const buf = new ArrayBuffer(binary.length);
     const bytes = new Uint8Array(buf);

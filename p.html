@@ -39,12 +39,9 @@
         <div class="share-section">
           <p style="font-size:1rem; font-weight:500;">Ready to send?</p>
           <p style="font-size:0.875rem; color:var(--text-muted); margin-bottom:1rem;">Generate a link to share this exact bouquet.</p>
-          <div id="generate-buttons" style="display:flex; flex-direction:column; gap:0.5rem; align-items:center;">
-            <button class="btn btn-primary" id="btn-generate">COPY ORIGINAL LINK</button>
-            <button class="btn btn-secondary" id="btn-generate-short">GENERATE SHORT LINK</button>
-          </div>
+          <button class="btn btn-primary" id="btn-generate">GENERATE SHARE LINK</button>
           
-          <div class="share-link-box" id="share-box" style="display:none; margin-top: 1rem;">
+          <div class="share-link-box" id="share-box" style="display:none;">
             <input type="text" class="share-link-input" id="share-link" readonly>
             <button class="btn btn-small btn-secondary" id="btn-copy">COPY</button>
           </div>
@@ -117,38 +114,13 @@
     if (!isReceiver && bouquetData) {
       document.getElementById('btn-generate').addEventListener('click', async () => {
         const shareURL = getShareURL(bouquetData);
+        document.getElementById('share-link').value = shareURL;
+        
+        document.getElementById('btn-generate').style.display = 'none';
+        document.getElementById('share-box').style.display = 'flex';
+        
         const success = await copyToClipboard(shareURL);
-        if (success) showToast('ORIGINAL LINK COPIED!');
-      });
-
-      document.getElementById('btn-generate-short').addEventListener('click', async () => {
-        const btn = document.getElementById('btn-generate-short');
-        const originalText = btn.textContent;
-        btn.textContent = 'GENERATING...';
-        btn.disabled = true;
-
-        const shareURL = getShareURL(bouquetData);
-        try {
-          // Note: TinyURL might show a preview screen when testing on localhost, but this stops on GitHub Pages.
-          const response = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(shareURL)}`);
-          if (response.ok) {
-            const shortURL = await response.text();
-            document.getElementById('share-link').value = shortURL;
-            document.getElementById('generate-buttons').style.display = 'none';
-            document.getElementById('share-box').style.display = 'flex';
-            
-            const success = await copyToClipboard(shortURL);
-            if (success) showToast('SHORT LINK COPIED!');
-          } else {
-            showToast('FAILED TO SHORTEN LINK');
-            btn.textContent = originalText;
-            btn.disabled = false;
-          }
-        } catch (e) {
-          showToast('ERROR CONNECTING TO API');
-          btn.textContent = originalText;
-          btn.disabled = false;
-        }
+        if (success) showToast('LINK COPIED!');
       });
 
       document.getElementById('btn-copy').addEventListener('click', async () => {
