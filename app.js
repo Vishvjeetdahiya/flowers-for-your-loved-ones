@@ -324,31 +324,37 @@ async function copyToClipboard(text) {
 
 // ─── URL Shortener ──────────────────────────
 async function shortenURL(longURL) {
-  // Try TinyURL first (reliable CORS support)
-  const result = await _tryShorten(
-    `https://tinyurl.com/api-create.php?url=${encodeURIComponent(longURL)}`,
-    'https://tinyurl.com/'
-  );
-  if (result) return result;
+  // Try Sniplinks first (free, CORS, no preview, no API key)
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 6000);
+    const res = await fetch('https://sniplinks.in/api/public/v1/shorten', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: longURL }),
+      signal: controller.signal
+    });
+    clearTimeout(timeout);
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.short_url) return data.short_url;
+    }
+  } catch (_) {}
 
-  // Fallback: is.gd
-  return await _tryShorten(
-    `https://is.gd/create.php?format=simple&url=${encodeURIComponent(longURL)}`,
-    'https://is.gd/'
-  );
-}
-
-async function _tryShorten(apiURL, expectedPrefix) {
+  // Fallback: TinyURL (simple GET API)
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 5000);
-    const response = await fetch(apiURL, { signal: controller.signal });
+    const res = await fetch(
+      `https://tinyurl.com/api-create.php?url=${encodeURIComponent(longURL)}`,
+      { signal: controller.signal }
+    );
     clearTimeout(timeout);
-    if (!response.ok) return null;
-    const shortURL = (await response.text()).trim();
-    if (shortURL && shortURL.startsWith(expectedPrefix)) return shortURL;
-    return null;
-  } catch (e) {
-    return null;
-  }
+    if (res.ok) {
+      const shortURL = (await res.text()).trim();
+      if (shortURL && shortURL.startsWith('https://tinyurl.com/')) return shortURL;
+    }
+  } catch (_) {}
+
+  return null;
 }
