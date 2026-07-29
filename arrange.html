@@ -8,68 +8,66 @@
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <div class="page-wrapper animate-fade-in" style="min-height: auto;">
-    <div style="width:100%; max-width:48rem; margin:0 auto; text-align:center; padding:0.5rem 0.5rem 2rem;">
+  <main class="container animate-fade-in">
 
-      <!-- Header -->
-      <a href="./index.html" class="logo-link">
-        <h2 class="brand-title-small" style="text-align: center;">flowers for your loved ones</h2>
-      </a>
+    <!-- Header -->
+    <a href="./index.html" class="logo-link">
+      <h2 class="brand-title-small">flowers for your loved ones</h2>
+    </a>
 
-      <h2 class="section-heading" style="margin-top:0.5rem;">ARRANGE YOUR BOUQUET</h2>
-      <p class="section-subtitle">Choose random or manual arrangement.</p>
+    <h2 class="section-heading">ARRANGE YOUR BOUQUET</h2>
+    <p class="section-subtitle">Choose random or manual arrangement.</p>
 
-      <!-- Bush Style Selector -->
-      <div class="bush-selector" id="bush-selector" style="position: relative; z-index: 20;">
-        <button class="bush-option active" data-bush="bush-1">STYLE 1</button>
-        <button class="bush-option" data-bush="bush-2">STYLE 2</button>
-        <button class="bush-option" data-bush="bush-3">STYLE 3</button>
-      </div>
-
-      <!-- Arrange Mode Toggle -->
-      <div class="arrange-mode-toggle" id="arrange-mode-toggle" style="position: relative; z-index: 20;">
-        <button class="arrange-mode-btn active" data-mode="random">⟳ RANDOM</button>
-        <button class="arrange-mode-btn" data-mode="manual">✋ MANUAL</button>
-      </div>
-
-      <!-- Random mode controls -->
-      <div id="random-controls" style="margin-bottom: 0.5rem; position: relative; z-index: 20;">
-        <button class="btn btn-small btn-secondary" id="btn-reshuffle" style="padding: 0.5rem 1rem; border-radius: 9999px;">
-          ⟳ RESHUFFLE FLOWERS
-        </button>
-      </div>
-
-      <!-- Manual mode controls -->
-      <div id="manual-controls" style="display:none; position: relative; z-index: 20;">
-        <p class="manual-hint">Drag flowers to reposition. Tap a flower then use controls to rotate and scale.</p>
-        <div class="rotation-controls" id="rotation-controls" style="display:none;">
-          <button class="rot-btn" id="btn-scale-down">-</button>
-          <span class="rot-label" id="scale-label">100%</span>
-          <button class="rot-btn" id="btn-scale-up">+</button>
-          
-          <button class="rot-btn" id="btn-rot-left" style="margin-left: 0.5rem;">↺</button>
-          <span class="rot-label" id="rot-label">0°</span>
-          <button class="rot-btn" id="btn-rot-right">↻</button>
-        </div>
-      </div>
-
-      <!-- Bouquet Preview -->
-      <div class="bouquet-display">
-        <div class="bouquet-container">
-          <div class="bouquet-frame">
-            <div id="bouquet-preview"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Actions -->
-      <div class="btn-group-horizontal" style="padding:1rem 0 0.5rem; position: relative; z-index: 20;">
-        <a href="./bouquet.html" class="btn btn-small btn-secondary" id="btn-back" style="width:auto;">BACK</a>
-        <button class="btn btn-small btn-primary" id="btn-next" style="width:auto;">NEXT</button>
-      </div>
-
+    <!-- Bush Style Selector -->
+    <div class="bush-selector" id="bush-selector">
+      <button class="bush-option active" data-bush="bush-1">STYLE 1</button>
+      <button class="bush-option" data-bush="bush-2">STYLE 2</button>
+      <button class="bush-option" data-bush="bush-3">STYLE 3</button>
     </div>
-  </div>
+
+    <!-- Arrange Mode Toggle -->
+    <div class="arrange-mode-toggle" id="arrange-mode-toggle">
+      <button class="arrange-mode-btn active" data-mode="random">⟳ RANDOM</button>
+      <button class="arrange-mode-btn" data-mode="manual">✋ MANUAL</button>
+    </div>
+
+    <!-- Random mode controls -->
+    <div id="random-controls" style="margin-bottom: 0.5rem; position: relative; z-index: 20;">
+      <button class="btn btn-small btn-secondary" id="btn-reshuffle" style="padding: 0.5rem 1rem; border-radius: 9999px;">
+        ⟳ RESHUFFLE FLOWERS
+      </button>
+    </div>
+
+    <!-- Manual mode controls -->
+    <div id="manual-controls" style="display:none; position: relative; z-index: 20;">
+      <p class="manual-hint">Drag flowers to reposition. Tap a flower then use controls to rotate and scale.</p>
+      <div class="rotation-controls" id="rotation-controls" style="display:none;">
+        <button class="rot-btn" id="btn-scale-down">-</button>
+        <span class="rot-label" id="scale-label">100%</span>
+        <button class="rot-btn" id="btn-scale-up">+</button>
+        
+        <button class="rot-btn" id="btn-rot-left" style="margin-left: 0.5rem;">↺</button>
+        <span class="rot-label" id="rot-label">0°</span>
+        <button class="rot-btn" id="btn-rot-right">↻</button>
+      </div>
+    </div>
+
+    <!-- Bouquet Preview -->
+    <div class="bouquet-display">
+      <div class="bouquet-container">
+        <div class="bouquet-frame">
+          <div id="bouquet-preview"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="btn-group-horizontal" style="position: relative; z-index: 20;">
+      <a href="./bouquet.html" class="btn btn-small btn-secondary" id="btn-back">BACK</a>
+      <button class="btn btn-small btn-primary" id="btn-next">NEXT</button>
+    </div>
+
+  </main>
 
   <script src="./app.js"></script>
   <script>
@@ -77,7 +75,7 @@
     const mode = getMode();
     const state = loadBuilderState();
     
-    if (!state || !state.flowers || state.flowers.length < 3) {
+    if (!state || !state.flowers || state.flowers.length < 1) {
       window.location.href = `./bouquet.html?mode=${mode}`;
     }
 

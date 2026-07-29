@@ -8,59 +8,56 @@
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <div class="page-wrapper" style="min-height: auto;">
-    <div class="animate-fade-in" style="width:100%; max-width:48rem; margin:0 auto; text-align:center; padding:0.5rem 0.5rem 2rem;">
+  <main class="container animate-fade-in">
+    <!-- Header -->
+    <a href="./index.html" class="logo-link">
+      <h2 class="brand-title-small">flowers for your loved ones</h2>
+    </a>
 
-      <!-- Header -->
-      <a href="./index.html" class="logo-link">
-        <h2 class="brand-title-small" style="text-align: center;">flowers for your loved ones</h2>
-      </a>
+    <h2 class="section-heading" id="preview-heading">YOUR BOUQUET</h2>
 
-      <h2 class="section-heading" id="preview-heading" style="margin-top:0.5rem;">YOUR BOUQUET</h2>
-
-      <!-- Bouquet Preview -->
-      <div class="bouquet-display" style="margin-top:1rem;">
-        <div class="bouquet-container">
-          <div class="bouquet-frame">
-            <div id="bouquet-preview"></div>
-          </div>
+    <!-- Bouquet Preview -->
+    <div class="bouquet-display">
+      <div class="bouquet-container">
+        <div class="bouquet-frame">
+          <div id="bouquet-preview"></div>
         </div>
       </div>
+    </div>
 
-      <!-- Note Card -->
-      <div id="note-area" style="display:none; margin: 0 auto; max-width:28rem; position: relative; z-index: 20;">
-        <div class="note-card preview-mode">
-          <div class="note-display" id="view-body"></div>
-        </div>
+    <!-- Note Card -->
+    <div id="note-area" style="display:none;" class="note-preview-area">
+      <div class="note-card preview-mode">
+        <div class="note-display" id="view-body"></div>
       </div>
+    </div>
 
-      <!-- Builder Actions (Shown if you just built it) -->
-      <div id="builder-actions" style="display:none; margin-top:1.5rem; position: relative; z-index: 20;">
-        <div class="share-section">
-          <p style="font-size:1rem; font-weight:500;">Ready to send?</p>
-          <p style="font-size:0.875rem; color:var(--text-muted); margin-bottom:1rem;">Generate a link to share this exact bouquet.</p>
-          <button class="btn btn-primary" id="btn-generate">GENERATE SHARE LINK</button>
-          
-          <div class="share-link-box" id="share-box" style="display:none;">
+    <!-- Builder Actions (Shown if you just built it) -->
+    <div id="builder-actions" style="display:none;" class="builder-actions">
+      <div class="share-section">
+        <p class="share-section-heading">Ready to send?</p>
+        <p class="share-section-subtext">Generate a link to share this exact bouquet.</p>
+        <button class="btn btn-primary" id="btn-generate">GENERATE SHARE LINK</button>
+        
+        <div class="share-link-box" id="share-box" style="display:none;">
+          <div class="share-link-row">
             <input type="text" class="share-link-input" id="share-link" readonly>
             <button class="btn btn-small btn-secondary" id="btn-copy">COPY</button>
           </div>
-        </div>
-        <div style="margin-top:1rem;">
-          <a href="./note.html" class="btn btn-small btn-text" id="btn-back">← EDIT NOTE</a>
+          <a href="https://tinyurl.com" target="_blank" rel="noopener noreferrer" class="btn btn-small btn-secondary" id="btn-shorten">SHORTEN URL</a>
         </div>
       </div>
-
-      <!-- Receiver Actions (Shown if opened via share link) -->
-      <div id="receiver-actions" style="display:none; margin-top:1.5rem; position: relative; z-index: 20;">
-        <p style="font-size:0.875rem; color:var(--text-muted); margin-bottom:1rem;">
-          made with flowers for your loved ones
-        </p>
-        <a href="./index.html" class="btn btn-secondary">BUILD YOUR OWN BOUQUET</a>
+      <div class="share-edit-link">
+        <a href="./note.html" class="btn btn-small btn-text" id="btn-back">← EDIT NOTE</a>
       </div>
-
     </div>
-  </div>
+
+    <!-- Receiver Actions (Shown if opened via share link) -->
+    <div id="receiver-actions" style="display:none;" class="receiver-actions">
+      <a href="./index.html" class="btn btn-secondary">BUILD YOUR OWN BOUQUET</a>
+    </div>
+
+  </main>
 
   <script src="./app.js"></script>
   <script>

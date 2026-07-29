@@ -11,33 +11,28 @@
   <main class="container animate-fade-in">
     <!-- Header -->
     <a href="./index.html" class="logo-link">
-      <h2 class="brand-title-small" style="text-align: center;">flowers for your loved ones</h2>
+      <h2 class="brand-title-small">flowers for your loved ones</h2>
     </a>
 
     <!-- Builder Area -->
-    <div style="flex-grow:1; padding: 0.5rem 0;">
-      <div style="height:100%; text-align:center;">
+    <div class="builder-area" style="flex-grow: 1;">
+      <p class="section-subtitle">Click on a flower to select it. Click again to add more.</p>
 
-        <h2 class="section-heading">Pick 3 to 10 BLOOMS</h2>
-        <p class="section-subtitle">Click on a flower to select it. Click again to add more.</p>
+      <!-- Counter -->
+      <p class="counter-text" id="counter">0 selected</p>
 
-        <!-- Counter -->
-        <p class="counter-text" id="counter">0 / 10 selected</p>
+      <!-- Flower Grid -->
+      <div class="flower-grid" id="flower-grid"></div>
 
-        <!-- Flower Grid -->
-        <div class="flower-grid" id="flower-grid"></div>
-
-        <!-- Selected Pills -->
-        <div class="selection-area">
-          <div class="selection-pills" id="selection-pills"></div>
-        </div>
-
+      <!-- Selected Pills -->
+      <div class="selection-area">
+        <div class="selection-pills" id="selection-pills"></div>
       </div>
     </div>
 
     <!-- Navigation -->
     <div class="nav-buttons">
-      <a href="./index.html" class="btn btn-small btn-secondary" style="width:auto;">BACK</a>
+      <a href="./index.html" class="btn btn-small btn-secondary">BACK</a>
       <button class="btn btn-small btn-disabled" id="btn-next" disabled>NEXT</button>
     </div>
   </main>
@@ -64,7 +59,7 @@
       const total = getTotalCount();
 
       // Counter
-      document.getElementById('counter').textContent = `${total} / 10 selected`;
+      document.getElementById('counter').textContent = `${total} selected`;
 
       // Update grid badges
       FLOWERS.forEach(flower => {
@@ -102,9 +97,9 @@
         pillsContainer.appendChild(pill);
       });
 
-      // Next button (Min 3, Max 10)
+      // Next button (Min 1 bloom)
       const nextBtn = document.getElementById('btn-next');
-      if (total >= 3 && total <= 10) {
+      if (total >= 1) {
         nextBtn.disabled = false;
         nextBtn.classList.remove('btn-disabled');
         nextBtn.classList.add('btn-primary');
@@ -116,11 +111,6 @@
     }
 
     function handleFlowerClick(flowerId) {
-      const total = getTotalCount();
-      if (total >= 10) {
-        showToast("Maximum 10 blooms reached!");
-        return; 
-      }
       selections[flowerId] = (selections[flowerId] || 0) + 1;
       updateUI();
     }
@@ -157,7 +147,7 @@
     // ─── Next Button ───────────────────────────
     document.getElementById('btn-next').addEventListener('click', () => {
       const total = getTotalCount();
-      if (total < 3 || total > 10) return;
+      if (total < 1) return;
 
       // Build flower list
       const flowerList = [];

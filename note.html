@@ -8,32 +8,28 @@
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <div class="page-wrapper animate-fade-in" style="min-height: auto;">
-    <div style="width:100%; max-width:48rem; margin:0 auto; text-align:center; padding:0.5rem 0.5rem 2rem;">
+  <main class="container animate-fade-in">
+    <!-- Header -->
+    <a href="./index.html" class="logo-link">
+      <h2 class="brand-title-small">flowers for your loved ones</h2>
+    </a>
 
-      <!-- Header -->
-      <a href="./index.html" class="logo-link">
-        <h2 class="brand-title-small" style="text-align: center;">flowers for your loved ones</h2>
-      </a>
+    <h2 class="section-heading">WRITE A NOTE</h2>
+    <p class="section-subtitle">Add a personal message to your bouquet.</p>
 
-      <h2 class="section-heading" style="margin-top:0.5rem;">WRITE A NOTE</h2>
-      <p class="section-subtitle">Add a personal message to your bouquet.</p>
-
-      <!-- Note Card -->
-      <div style="margin: 1rem auto; max-width:28rem;">
-        <div class="note-card">
-          <textarea id="note-body" placeholder="Write your message here..."></textarea>
-        </div>
+    <!-- Note Card -->
+    <div class="note-card-wrapper">
+      <div class="note-card">
+        <textarea id="note-body" placeholder="Write your message here..."></textarea>
       </div>
-
-      <!-- Actions -->
-      <div class="btn-group-horizontal" style="padding:1rem 0 0.5rem;">
-        <a href="./arrange.html" class="btn btn-small btn-secondary" id="btn-back" style="width:auto;">BACK</a>
-        <button class="btn btn-small btn-primary" id="btn-next" style="width:auto;">FINISH</button>
-      </div>
-
     </div>
-  </div>
+
+    <!-- Actions -->
+    <div class="btn-group-horizontal">
+      <a href="./arrange.html" class="btn btn-small btn-secondary" id="btn-back">BACK</a>
+      <button class="btn btn-small btn-primary" id="btn-next">FINISH</button>
+    </div>
+  </main>
 
   <script src="./app.js"></script>
   <script>
@@ -41,7 +37,7 @@
     const mode = getMode();
     const state = loadBuilderState();
     
-    if (!state || !state.flowers || state.flowers.length < 3) {
+    if (!state || !state.flowers || state.flowers.length < 1) {
       window.location.href = `./bouquet.html?mode=${mode}`;
     }
 
